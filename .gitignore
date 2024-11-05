@@ -27,3 +27,13 @@ test.*
 
 # Dealing with Mac users
 .DS_Store
+
+#python generated files&folders
+.venv
+**/__pycache__
+
+#saved models and data and test results
+#leave data one in for now so that it works for others
+src/saves/models
+src/saves/test_results
+
