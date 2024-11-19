@@ -1,15 +1,16 @@
 from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.model_selection import train_test_split
+
+from src.preprocess.dataset_creator import CSVDatasetCreator
 from src.util import Util
 from src.pickler import Pickler
-from sklearn.feature_extraction.text import TfidfVectorizer
-import numpy as np
 import pandas as pd
 
 class Model:
 
-    def __init__(self, s_model) -> None:
+    def __init__(self, s_model,dataset_creator = CSVDatasetCreator()) -> None:
         self.classifier = s_model
+        self.dataset_creator = dataset_creator
     
     def train(self,X_train, y_train) -> None:
         self.classifier.fit(X_train, y_train)
@@ -18,9 +19,9 @@ class Model:
         self.classifier.fit(X_test, y_test)
 
     def save_model(self,model_name):
-        Pickler.dump("models/"+model_name)
+        Pickler.dump("models/"+model_name,self.classifier)
     
-    def model_data(self,temp):
+    """def model_data(self,temp):
         tfidfconverter = TfidfVectorizer(max_features=2000, min_df=4, max_df=0.90)
         x1 = tfidfconverter.fit_transform(temp["Interaction content"]).toarray()
         x2 = tfidfconverter.fit_transform(temp["ts_en"]).toarray()
@@ -40,7 +41,7 @@ class Model:
         X_train, X_test, y_train, y_test = train_test_split(X_good, y_good,     test_size=test_size, random_state=0)
         X_train = np.concatenate((X_train, X_bad), axis=0)
         y_train = np.concatenate((y_train, y_bad), axis=0)
-        return {"X_train":X_train, "X_test":X_test, "y_train":y_train, "y_test":y_test}
+        return {"X_train":X_train, "X_test":X_test, "y_train":y_train, "y_test":y_test}"""
     
     def test_model(self,X_test,y_test,file_name):
         y_pred = self.classifier.predict(X_test)
