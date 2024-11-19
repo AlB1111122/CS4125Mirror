@@ -1,10 +1,5 @@
-from preprocess import preprocessor
-from model import model_factory
+from preprocess import DatasetCreator
 
-p = preprocessor.Preprocessor()
-data = p.process("shortAppGallery.csv")
-
-m = model_factory.NewModelFactory.create_model("logistic_regression")
-train = m.model_data(data)
-m.train(train["X_train"],train["y_train"])
-m.test_model(train["X_test"],train["y_test"], "classModelTest.txt")
+#m = model_factory.NewModelFactory.create_model("logistic_regression")
+dc = DatasetCreator.CSVDatasetCreator()
+print(dc.create_train_test("shortAppGallery.csv"))
