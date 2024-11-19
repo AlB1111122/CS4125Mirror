@@ -30,6 +30,7 @@ class Model:
         temp = temp.loc[temp.y1.isin(good_y1)]
         y = temp.y.to_numpy()
 
+        #rm bad test cases
         y_series = pd.Series(y)
         good_y_value = y_series.value_counts()[y_series.value_counts() >= 3].index
         y_good = y[y_series.isin(good_y_value)]
@@ -46,7 +47,7 @@ class Model:
         y_pred = self.classifier.predict(X_test)
         p_result = pd.DataFrame(self.classifier.predict_proba(X_test))
         p_result.columns = self.classifier.classes_
-        with open(Util.proj_dir+'/saves/test_results/'+file_name, 'w') as file:
+        with open(Util.PROJ_DIR+'/saves/test_results/'+file_name, 'w') as file:
             print(p_result, file=file)
             print(confusion_matrix(y_test, y_pred), file=file)
             print(classification_report(y_test, y_pred), file=file)
