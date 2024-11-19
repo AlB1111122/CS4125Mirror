@@ -22,12 +22,12 @@ class IDatasetCreator:
 class CSVDatasetCreator(IDatasetCreator):
 
     @staticmethod
-    def extract_data(data,lang):
+    def extract_data(data,lang,min_val):
         tfidfconverter = TfidfVectorizer(max_features=2000, min_df=4, max_df=0.90)
         x1 = tfidfconverter.fit_transform(data["Interaction content"]).toarray()
         x2 = tfidfconverter.fit_transform(data["ts_" + lang]).toarray()  # make that mod
         X = np.concatenate((x1, x2), axis=1)
-        good_y1 = data.y1.value_counts()[data.y1.value_counts() > 10].index
+        good_y1 = data.y1.value_counts()[data.y1.value_counts() > min_val].index
         data = data.loc[data.y1.isin(good_y1)]
         y = data.y.to_numpy()
         # rm bad test cases
@@ -51,17 +51,17 @@ class CSVDatasetCreator(IDatasetCreator):
             if data.empty:
                 print("The DataFrame is empty.")
                 return
-            X_good, y_good = CSVDatasetCreator.extract_data(data,p.translator.lang)
+            X_good, y_good = CSVDatasetCreator.extract_data(data,p.translator.lang,10)
             # Call the original function with updated arguments
             return func(instance,X_good=X_good,y_good=y_good, *args, **kwargs)
 
         return wrapper
 
-    @autoprocessed # dont supply vaues for data or lang
+    @autoprocessed
     def create_train_test(self,file_name,X_good,y_good,test_size=.2):
         X_train, X_test, y_train, y_test = train_test_split(X_good, y_good, test_size=test_size, random_state=0)
         return {"X_train": X_train, "X_test": X_test, "y_train": y_train, "y_test": y_test}
 
-    @autoprocessed # dont supply values for data or lang
+    @autoprocessed
     def create_dataset(self,file_name,use,X_good,y_good):
         return {"X_"+use: X_good,"y_"+use: y_good}
