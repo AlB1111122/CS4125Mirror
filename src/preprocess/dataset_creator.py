@@ -19,10 +19,10 @@ class IDatasetCreator:
         def wrapper(instance, *args, **kwargs):
             pass
 
-class CSVDatasetCreator(IDatasetCreator):
 
+class DatasetCreator(IDatasetCreator):
     @staticmethod
-    def extract_data(data,lang,min_val):
+    def extract_data(data, lang,min_val):
         tfidfconverter = TfidfVectorizer(max_features=2000, min_df=4, max_df=0.90)
         x1 = tfidfconverter.fit_transform(data["Interaction content"]).toarray()
         x2 = tfidfconverter.fit_transform(data["ts_" + lang]).toarray()  # make that mod
@@ -35,7 +35,9 @@ class CSVDatasetCreator(IDatasetCreator):
         good_y_value = y_series.value_counts()[y_series.value_counts() >= 3].index
         y_good = y[y_series.isin(good_y_value)]
         X_good = X[y_series.isin(good_y_value)]
-        return X_good,y_good
+        return X_good, y_good
+
+class CSVDatasetCreator(DatasetCreator):
 
     @staticmethod
     def autoprocessed(func):
@@ -51,7 +53,7 @@ class CSVDatasetCreator(IDatasetCreator):
             if data.empty:
                 print("The DataFrame is empty.")
                 return
-            X_good, y_good = CSVDatasetCreator.extract_data(data,p.translator.lang,10)
+            X_good, y_good = CSVDatasetCreator.extract_data(data=data,lang=p.translator.lang,min_val=10)
             # Call the original function with updated arguments
             return func(instance,X_good=X_good,y_good=y_good, *args, **kwargs)
 
