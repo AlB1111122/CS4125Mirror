@@ -5,24 +5,13 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 
-class IDatasetCreator:
-    def create_dataset(self,file_name,use):
-        pass
-    def create_train_test(self):
-        pass
-    @staticmethod
-    def extract_data(self,data,lang):
-        pass
-    @staticmethod
-    def autoprocessed(func):
-        @wraps(func)
-        def wrapper(instance, *args, **kwargs):
-            pass
-
-
-class DatasetCreator(IDatasetCreator):
+class IDataExtractor:
     @staticmethod
     def extract_data(data, lang,min_val):
+        pass
+
+class DataExtractor(IDataExtractor):
+    def extract_data(self,data, lang, min_val):
         tfidfconverter = TfidfVectorizer(max_features=2000, min_df=4, max_df=0.90)
         x1 = tfidfconverter.fit_transform(data["Interaction content"]).toarray()
         x2 = tfidfconverter.fit_transform(data["ts_" + lang]).toarray()  # make that mod
@@ -37,23 +26,40 @@ class DatasetCreator(IDatasetCreator):
         X_good = X[y_series.isin(good_y_value)]
         return X_good, y_good
 
-class CSVDatasetCreator(DatasetCreator):
+class IDatasetCreator:
+    def __init__(self, preprocessor,data_extractor):
+        self.preprocessor=preprocessor
+        self.data_extractor=data_extractor
 
+    def create_dataset(self,file_name,use):
+        pass
+    def create_train_test(self):
+        pass
+    @staticmethod
+    def extract_data(self,data,lang):
+        pass
     @staticmethod
     def autoprocessed(func):
         @wraps(func)
         def wrapper(instance, *args, **kwargs):
-            p = Preprocessor()
-            # Extract the filename (assumed to be the second argument here)
+            pass
+
+class CSVDatasetCreator(IDatasetCreator):
+    def __init__(self, preprocessor=Preprocessor(),data_extractor=DataExtractor()):
+        super().__init__(preprocessor,data_extractor)
+
+    def autoprocessed(func):
+        def wrapper(instance, *args, **kwargs):
             file_name = args[0]
             print(f"Processing file: {file_name}")
 
+            p = instance.preprocessor
             # Preprocess the data using the instance's preprocessor
             data = p.process(file_name)
             if data.empty:
                 print("The DataFrame is empty.")
                 return
-            X_good, y_good = CSVDatasetCreator.extract_data(data=data,lang=p.translator.lang,min_val=10)
+            X_good, y_good = instance.data_extractor.extract_data(data=data,lang=p.translator.lang,min_val=10)
             # Call the original function with updated arguments
             return func(instance,X_good=X_good,y_good=y_good, *args, **kwargs)
 
