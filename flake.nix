@@ -17,10 +17,11 @@
         packages = [
           pkgs.python3
         ] ++ (with pkgs.python3Packages; [
-          pkgs.python3
           numpy
           pandas
           scikit-learn
+          stanza
+          transformers
         ]);
       in {
         devShells.default = pkgs.mkShell {
