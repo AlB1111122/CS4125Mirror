@@ -1,3 +1,4 @@
+from abc import ABC
 import pandas as pd
 from functools import wraps
 from src.preprocess.preprocessor import Preprocessor
@@ -5,7 +6,7 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 
-class IDataExtractor:
+class IDataExtractor(ABC):
     @staticmethod
     def extract_data(data, lang,min_val):
         pass
@@ -26,7 +27,7 @@ class DataExtractor(IDataExtractor):
         X_good = X[y_series.isin(good_y_value)]
         return X_good, y_good
 
-class IDatasetCreator:
+class IDatasetCreator(ABC):
     def __init__(self, preprocessor,data_extractor):
         self.preprocessor=preprocessor
         self.data_extractor=data_extractor
