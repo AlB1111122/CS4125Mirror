@@ -1,8 +1,9 @@
+from abc import ABC
 from src.preprocess.data_cleaner import CSVDataCleaner
 from src.preprocess.data_loader import CSVDataLoader
 from src.preprocess.translator import StanzaTranslator
 
-class IPreprocessor:
+class IPreprocessor(ABC):
     def __init__(self, translator, data_loader, data_cleaner):
         self.translator = translator
         self.data_loader = data_loader

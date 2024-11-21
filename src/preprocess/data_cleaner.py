@@ -1,4 +1,6 @@
-class IDataCleaner:
+from abc import ABC
+
+class IDataCleaner(ABC):
     def clean(self, data):
         pass
 
