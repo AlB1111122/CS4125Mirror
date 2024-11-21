@@ -9,7 +9,7 @@ class CSVDataCleaner(IDataCleaner):
             data["Ticket Summary"].str
             .lower()
             .replace(noise, " ", regex=True)
-            .replace(r'\s+', ' ', egex=True).str
+            .replace(r'\s+', ' ', regex=True).str
             .strip()
         )
         # temp_debug = data.loc[:, ["Ticket Summary", "ts", "y"]]
