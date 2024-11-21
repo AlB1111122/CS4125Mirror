@@ -40,7 +40,7 @@ class Model(IModel):
         y_pred = self.classifier.predict(X_test)
         p_result = pd.DataFrame(self.classifier.predict_proba(X_test))
         p_result.columns = self.classifier.classes_
-        with open(Util.PROJ_DIR+'/saves/test_results/'+file_name, 'w') as file:
+        with open(Util().get_project_dir() +'/saves/test_results/'+file_name, 'w') as file:
             print(p_result, file=file)
             print(confusion_matrix(y_test, y_pred), file=file)
             print(classification_report(y_test, y_pred), file=file)
