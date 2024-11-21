@@ -10,7 +10,7 @@ class CSVDataLoader(IDataLoader):
         self.file_path = None
 
     def load_data(self,input_file_name):
-        self.file_path = Util.PROJ_DIR+"/data/"+input_file_name
+        self.file_path = Util().get_project_dir()+"/data/"+input_file_name
         df = pd.read_csv(self.file_path)
 
         # convert the dtype object to unicode string
