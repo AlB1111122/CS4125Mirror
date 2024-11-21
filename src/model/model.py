@@ -1,3 +1,4 @@
+from abc import ABC
 from sklearn.metrics import confusion_matrix, classification_report
 
 from src.preprocess.dataset_creator import CSVDatasetCreator
@@ -5,7 +6,7 @@ from src.util import Util
 from src.pickler import Pickler
 import pandas as pd
 
-class IModel:
+class IModel(ABC):
     def __init__(self, s_model,dataset_creator) -> None:
         self.classifier = s_model
         self.dataset_creator = dataset_creator
