@@ -1,28 +1,32 @@
-from functools import wraps
+from abc import ABC, abstractmethod
+
+from src.preprocess.data_extractor import DataExtractor
 from src.preprocess.preprocessor import Preprocessor
 from sklearn.model_selection import train_test_split
+from src.pickler import Pickler
 
-class IDatasetCreator:
-    def __init__(self, preprocessor,data_extractor):
-        self.preprocessor=preprocessor
+class IDatasetCreator(ABC):
+    def __init__(self, data_extractor):
         self.data_extractor=data_extractor
 
-    def create_dataset(self,file_name,use):
-        pass
-    def create_train_test(self):
-        pass
-    @staticmethod
-    def extract_data(self,data,lang):
-        pass
-    @staticmethod
+    @abstractmethod
     def autoprocessed(func):
-        @wraps(func)
         def wrapper(instance, *args, **kwargs):
             pass
 
-class CSVDatasetCreator(IDatasetCreator):
-    def __init__(self, preprocessor=Preprocessor(),data_extractor=DataExtractor()):
-        super().__init__(preprocessor,data_extractor)
+    @abstractmethod
+    def create_dataset(self,file_name,use,x,y):
+        return {"X_"+use: x,"y_"+use: y}
+
+    @abstractmethod
+    def create_train_test(self,file_name,x,y,test_size=.2):
+        X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=test_size, random_state=0)
+        return {"X_train": X_train, "X_test": X_test, "y_train": y_train, "y_test": y_test}
+
+class ScratchDatasetCreator(IDatasetCreator):
+    def __init__(self, preprocessor=Preprocessor(), data_extractor=DataExtractor()):
+        super().__init__(data_extractor)
+        self.preprocessor=preprocessor
 
     def autoprocessed(func):
         def wrapper(instance, *args, **kwargs):
@@ -37,15 +41,43 @@ class CSVDatasetCreator(IDatasetCreator):
                 return
             X_good, y_good = instance.data_extractor.extract_data(data=data,lang=p.translator.lang,min_val=10)
             # Call the original function with updated arguments
-            return func(instance,X_good=X_good,y_good=y_good, *args, **kwargs)
+            return func(instance,x=X_good,y=y_good, *args, **kwargs)
 
         return wrapper
 
-    @autoprocessed
-    def create_train_test(self,file_name,X_good,y_good,test_size=.2):
-        X_train, X_test, y_train, y_test = train_test_split(X_good, y_good, test_size=test_size, random_state=0)
-        return {"X_train": X_train, "X_test": X_test, "y_train": y_train, "y_test": y_test}
+    @autoprocessed # x,y passed int by decorator
+    def create_train_test(self,file_name,x,y,test_size=.2):
+        return super().create_train_test(file_name,x,y,test_size)
 
-    @autoprocessed
-    def create_dataset(self,file_name,use,X_good,y_good):
-        return {"X_"+use: X_good,"y_"+use: y_good}
+
+    @autoprocessed # x,y passed int by decorator
+    def create_dataset(self,file_name,use,x,y):
+        return super().create_dataset(file_name,use,x,y)
+
+class LoadProcessedDatasetCreator(IDatasetCreator):
+    def __init__(self,lang="en",data_extractor=DataExtractor()):
+        super().__init__(data_extractor)
+        self.lang = lang
+
+    def autoprocessed(func):
+        def wrapper(instance, *args, **kwargs):
+            file_name = args[0]
+            print(f"Processing file: {file_name}")
+            data = Pickler.read_dump("data/"+file_name)
+
+            if data.empty:
+                print("The DataFrame is empty.")
+                return
+            X_good, y_good = instance.data_extractor.extract_data(data=data,lang=instance.lang,min_val=10)
+            # Call the original function with updated arguments
+            return func(instance,x=X_good,y=y_good, *args, **kwargs)
+
+        return wrapper
+
+    @autoprocessed  # x,y passed int by decorator
+    def create_train_test(self,file_name,x,y,test_size=.2):
+        return super().create_train_test(file_name,x,y,test_size)
+
+    @autoprocessed  # x,y passed int by decorator
+    def create_dataset(self,file_name,use,x,y,):
+        return super().create_dataset(file_name,use,x,y)
