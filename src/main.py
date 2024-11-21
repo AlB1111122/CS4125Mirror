@@ -2,7 +2,7 @@ from src.model import model_factory
 from src import pickler
 from src.preprocess.dataset_creator import DataExtractor
 
-m = model_factory.NewModelFactory.create_model("naive_bayes")
+m = model_factory.NewModelFactory.create_model("decision_tree")
 p = pickler.Pickler()
 d = p.read_dump("data/processed_data.dump")
 de = DataExtractor()
