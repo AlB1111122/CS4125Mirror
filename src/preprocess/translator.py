@@ -1,10 +1,11 @@
+from abc import ABC
 import stanza
 from stanza.pipeline.core import DownloadMethod
 from transformers import pipeline
 from transformers import M2M100ForConditionalGeneration, M2M100Tokenizer
 
 
-class ITranslator:
+class ITranslator(ABC):
     def __init__(self, lang):
         self.lang = lang
         pass

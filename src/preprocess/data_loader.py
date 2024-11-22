@@ -1,7 +1,9 @@
+from abc import ABC
+
 from src.util import Util
 import pandas as pd
 
-class IDataLoader:
+class IDataLoader(ABC):
     def load_data(self, file_name):
         pass
 

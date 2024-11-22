@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-
 from src.preprocess.data_extractor import DataExtractor
+import pandas as pd
 from src.preprocess.preprocessor import Preprocessor
 from sklearn.model_selection import train_test_split
 from src.pickler import Pickler

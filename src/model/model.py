@@ -1,11 +1,10 @@
+from abc import ABC
 from sklearn.metrics import confusion_matrix, classification_report
-
-from src.preprocess.dataset_creator import ScratchDatasetCreator
 from src.util import Util
 from src.pickler import Pickler
 import pandas as pd
 
-class IModel:
+class IModel(ABC):
     def __init__(self, s_model) -> None:
         self.classifier = s_model
 
