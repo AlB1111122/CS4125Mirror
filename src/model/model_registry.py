@@ -1,3 +1,5 @@
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neural_network import MLPClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.linear_model import LogisticRegression
@@ -11,6 +13,8 @@ class ModelRegistry:
             'random_forest': RandomForestClassifier(),
             'gradient_boosting': GradientBoostingClassifier(),
             'svc': SVC(probability=True),
+            'naive_bayes': GaussianNB(),
+            'mlp': MLPClassifier(),
         }
 
     def get_model(self,model_type: str):
