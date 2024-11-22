@@ -1,15 +1,12 @@
 from abc import ABC
 from sklearn.metrics import confusion_matrix, classification_report
-
-from src.preprocess.dataset_creator import CSVDatasetCreator
 from src.util import Util
 from src.pickler import Pickler
 import pandas as pd
 
 class IModel(ABC):
-    def __init__(self, s_model,dataset_creator) -> None:
+    def __init__(self, s_model) -> None:
         self.classifier = s_model
-        self.dataset_creator = dataset_creator
 
     def train(self, X_train, y_train) -> None:
         pass
@@ -25,8 +22,8 @@ class IModel(ABC):
 
 class Model(IModel):
 
-    def __init__(self, s_model, dataset_creator=CSVDatasetCreator()) -> None:
-        super().__init__(s_model, dataset_creator)
+    def __init__(self, s_model) -> None:
+        super().__init__(s_model)
     
     def train(self,X_train, y_train) -> None:
         self.classifier.fit(X_train, y_train)
