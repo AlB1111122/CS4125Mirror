@@ -24,3 +24,6 @@ class ModelRegistry:
 
     def register_model(self, model_name: str, model_class):
         self._registry[model_name] = model_class
+
+    def list_registries(self):
+        return self._registry.keys()
