@@ -33,13 +33,3 @@ class ModelFacade():
     
     def predict_model(self, X_test):
         return self.model.predict(X_test)
-    
-    def create_train_test(self, creator_type: str, file_name: str):
-        if creator_type == "scratch":
-            creator = ScratchDatasetCreator()
-        elif creator_type == "load":
-            creator = LoadProcessedDatasetCreator()
-        d = creator.create_train_test(file_name)
-        return d
- 
-   
