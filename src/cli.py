@@ -3,6 +3,7 @@ import os
 from numpy.f2py.auxfuncs import throw_error
 
 from src.model.model_facade import ModelFacade
+from src.pickler import Pickler
 from src.util import Util
 from src.preprocess.dataset_creator import LoadProcessedDatasetCreator, ScratchDatasetCreator
 import shutil
@@ -33,13 +34,13 @@ class CLI:
                 print(
 f"""
 Model selected: {self.selected_m_name}
-Active dataset: {self.active_dataset}
-
+active data selected: {self.active_dataset}
 1)Create new model 
 2)Load model from storage 
 3)Save current model 
 4)Get dataset 
 5)Use model
+6)Save current dataset 
 q)To quit
 """
                 )
@@ -94,8 +95,6 @@ q)To quit
                             match input("Selection: "):
                                 case "1":
                                     data_sel = input("Enter absolute path to file: ")
-                                    print(data_sel)
-                                    print(os.path.basename(data_sel))
                                     filen = os.path.basename(data_sel)
                                     try:
                                         shutil.copy(data_sel, self.util.get_project_dir()+dataset_source)
@@ -157,10 +156,17 @@ f"""
                                     print("Your selected dataset is not for training and testing")
                             case "4":
                                 if "X_data" in self.active_dataset:
-                                    print("predicted labels:")
+                                    print("predicted labels1:")
                                     print(self.model_facade.predict_model(self.active_dataset["X_data"]))
                                 else:
                                     print("Your selected dataset is not for predicting")
+                    case "6":
+                        print("Enter a name to send the dataset under, or leave blank to use default name")
+                        selection = input("Saved dataset name: ")
+                        if selection == "":
+                            selection = self.selected_m_name+"_dataset"
+                        Pickler.dump("/data/"+selection,self.active_dataset)
+                        return
                     case _:
                         print("Invalid selection")
             except ValueError:

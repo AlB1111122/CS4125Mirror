@@ -29,7 +29,7 @@ class Model(IModel):
         self.classifier.fit(X_train, y_train)
 
     def predict(self, data):
-        self.classifier.predict(data)
+       return self.classifier.predict(data)
 
     def save_model(self,model_name):
         Pickler.dump("models/"+model_name,self.classifier)

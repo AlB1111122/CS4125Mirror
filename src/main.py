@@ -1,4 +1,5 @@
 from src.model import model_factory
+from src.model.model_facade import ModelFacade
 from src.preprocess.dataset_creator import *
 """from src.model import model_facade
 from ""
@@ -28,11 +29,13 @@ sdc = ScratchDatasetCreator()
 d = sdc.create_train_test("shortAppGallery.csv")
 m.train(d["X_train"], d["y_train"])
 m.test_model(d["X_test"], d["y_test"],"test")"""
-
+#mf = ModelFacade()
+#mf.
 dsc = LoadProcessedDatasetCreator()
 d = dsc.create_dataset("processed_data.dump","test")
 m = model_factory.LoadModelFactory.create_model("test.pkl")
-m.train(d["X_test"], d["y_test"])
-single_instance = d["X_test"]
-print(single_instance)
-print(m.classifier.predict(single_instance))
+print(d)
+print(m.classifier.predict(d["X_test"]))
+
+print(m.predict(d["X_test"]))
+#print(m.classifier.predict(single_instance))

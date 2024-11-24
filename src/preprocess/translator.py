@@ -47,7 +47,8 @@ class StanzaTranslator(ITranslator):
             if doc.lang == self.lang:
                 text_transd_l = text_transd_l + [text]
             else:
-                self.map_language(doc.lang)
+                if doc.lang in self.mappings.keys():
+                    doc.lang = self.map_language(doc.lang)
                 case = 2
 
                 if case == 1:
