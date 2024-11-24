@@ -29,7 +29,8 @@ class ScratchDatasetCreator(IDatasetCreator):
 
     def autoprocessed(func):
         def wrapper(instance, *args, **kwargs):
-            file_name = args[0]
+            #file_name = args[0]
+            file_name = kwargs.get("file_name")
             print(f"Processing file: {file_name}")
 
             p = instance.preprocessor
@@ -60,16 +61,15 @@ class LoadProcessedDatasetCreator(IDatasetCreator):
 
     def autoprocessed(func):
         def wrapper(instance, *args, **kwargs):
-            file_name = args[0]
+            file_name = kwargs.get("file_name")
             print(f"Processing file: {file_name}")
             data = Pickler.read_dump("data/"+file_name)
 
             if not data:
                 print("The DataFrame is empty.")
                 return
-            #X_good, y_good = instance.data_extractor.extract_data(data=data,lang=instance.lang,min_val=10)
-            # Call the original function with updated arguments
-            return func(instance,x=data["X_data"],y=data["y_data"], *args, **kwargs)
+            #return func(instance,x=data["X_data"],y=data["y_data"], *args, **kwargs)
+            return data
 
         return wrapper
 

@@ -89,6 +89,7 @@ q)To quit
                                 case _:
                                     print("Invalid selection, try again")
                                     loop = False
+                                    continue
                             if dataset_source == "":
                                 throw_error(IndexError)
                             print("Pick the file you want to load from: 1)Enter full path to new file 2)Pick from known data")
@@ -102,22 +103,24 @@ q)To quit
                                     except shutil.SameFileError:
                                         print("File already exists")
                                         loop = False
+                                        continue
                                 case "2":
                                     print(dataset_source)
                                     data_sel = self.select_from_dir(dataset_source)
                                 case _:
                                     print("Invalid selection, try again")
                                     loop = False
+                                    continue
 
                             print("Pick the use you want the dataset for: 1)Single usage (train or test or predict) 2)Train and test")
                             match input("Selection: "):
                                 case "1":
-                                    self.active_dataset = self.dataset_creator.create_dataset(data_sel, "data")
+                                    self.active_dataset = self.dataset_creator.create_dataset(file_name=data_sel, use="data")
                                 case "2":
-                                    train_split = float(input("Train split size between 0-1 (will be .2 if left blank): "))
+                                    train_split = float(input("Train split size between 0-1: "))
                                     if train_split <= 0 or train_split >= 1:
                                         train_split = .2
-                                    self.active_dataset = self.dataset_creator.create_train_test(data_sel,train_split)
+                                    self.active_dataset = self.dataset_creator.create_train_test(file_name=data_sel,test_size=train_split)
                                 case _:
                                     print("Invalid selection, try again")
                             loop = False
@@ -138,7 +141,7 @@ f"""
                                     print("Your selected dataset is not for training")
                             case "2":
                                 if "y_data" in self.active_dataset:
-                                    test_outp_name = input("Name of test results file: ")
+                                    test_outp_name = input("Name of test results file(file will appear when you exit the program): ")
                                     if test_outp_name == "":
                                         test_outp_name=self.selected_m_name+"_test_results.txt"
                                     self.model_facade.test_model(self.active_dataset["X_data"],self.active_dataset["y_data"],test_outp_name)
@@ -168,10 +171,12 @@ f"""
                         Pickler.dump("/data/"+selection,self.active_dataset)
                     case _:
                         print("Invalid selection")
-            except ValueError:
+            except AttributeError:
+                print("Invalid selection")
+            """except ValueError:
                 print("Invalid input. Please try again")
             except IndexError:
-                print("Invalid input. Please dont exceed the presented indices")
+                print("Invalid input. Please dont exceed the presented indices")"""
 
 
 if __name__ == "__main__":
