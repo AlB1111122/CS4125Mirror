@@ -11,7 +11,7 @@ class IModel(ABC):
     def train(self, X_train, y_train) -> None:
         pass
 
-    def predict(self, X_test,y_test):
+    def predict(self, data):
         pass
 
     def save_model(self, model_name):
@@ -28,8 +28,8 @@ class Model(IModel):
     def train(self,X_train, y_train) -> None:
         self.classifier.fit(X_train, y_train)
 
-    def predict(self, X_test,y_test):
-        self.classifier.fit(X_test,y_test)
+    def predict(self, data):
+        self.classifier.predict(data)
 
     def save_model(self,model_name):
         Pickler.dump("models/"+model_name,self.classifier)

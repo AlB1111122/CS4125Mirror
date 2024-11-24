@@ -6,7 +6,6 @@ from src.model.model_facade import ModelFacade
 from src.util import Util
 from src.preprocess.dataset_creator import LoadProcessedDatasetCreator, ScratchDatasetCreator
 import shutil
-from pathlib import Path
 
 class CLI:
     def __init__(self):
@@ -34,6 +33,7 @@ class CLI:
                 print(
 f"""
 Model selected: {self.selected_m_name}
+Active dataset: {self.active_dataset}
 
 1)Create new model 
 2)Load model from storage 
@@ -123,12 +123,14 @@ q)To quit
                                     print("Invalid selection, try again")
                             loop = False
                     case "5":
-                        print(f"""
-                        1)Train
-                        2)Test
-                        3)Train and test
-                        4)Predict
-                        """)
+                        print(
+f"""
+1)Train
+2)Test
+3)Train and test
+4)Predict
+"""
+                        )
                         match(input("Selection: ")):
                             case "1":
                                 if "y_data" in self.active_dataset:
@@ -155,11 +157,10 @@ q)To quit
                                     print("Your selected dataset is not for training and testing")
                             case "4":
                                 if "X_data" in self.active_dataset:
-                                    print(self.model_facade.predict_model(self.active_dataset["X_data"],self.active_dataset["y_data"]))
+                                    print("predicted labels:")
+                                    print(self.model_facade.predict_model(self.active_dataset["X_data"]))
                                 else:
                                     print("Your selected dataset is not for predicting")
-                    #case "6": come back to this
-                    #    continue
                     case _:
                         print("Invalid selection")
             except ValueError:

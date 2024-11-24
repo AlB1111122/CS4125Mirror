@@ -28,3 +28,11 @@ sdc = ScratchDatasetCreator()
 d = sdc.create_train_test("shortAppGallery.csv")
 m.train(d["X_train"], d["y_train"])
 m.test_model(d["X_test"], d["y_test"],"test")"""
+
+dsc = LoadProcessedDatasetCreator()
+d = dsc.create_dataset("processed_data.dump","test")
+m = model_factory.LoadModelFactory.create_model("test.pkl")
+m.train(d["X_test"], d["y_test"])
+single_instance = d["X_test"]
+print(single_instance)
+print(m.classifier.predict(single_instance))
