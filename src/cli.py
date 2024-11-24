@@ -28,7 +28,7 @@ class CLI:
         response = input("Selection: ")
         return files[int(response)]
 
-    def cli(self):
+    def run(self):
         while True:
             try:
                 print(
@@ -177,9 +177,3 @@ f"""
                 print("Invalid input. Please try again")
             except IndexError:
                 print("Invalid input. Please dont exceed the presented indices")"""
-
-
-if __name__ == "__main__":
-    model_facade = ModelFacade()
-    cli = CLI()
-    cli.cli()
