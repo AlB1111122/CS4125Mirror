@@ -64,12 +64,12 @@ class LoadProcessedDatasetCreator(IDatasetCreator):
             print(f"Processing file: {file_name}")
             data = Pickler.read_dump("data/"+file_name)
 
-            if data.empty:
+            if not data:
                 print("The DataFrame is empty.")
                 return
-            X_good, y_good = instance.data_extractor.extract_data(data=data,lang=instance.lang,min_val=10)
+            #X_good, y_good = instance.data_extractor.extract_data(data=data,lang=instance.lang,min_val=10)
             # Call the original function with updated arguments
-            return func(instance,x=X_good,y=y_good, *args, **kwargs)
+            return func(instance,x=data["X_data"],y=data["y_data"], *args, **kwargs)
 
         return wrapper
 

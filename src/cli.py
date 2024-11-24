@@ -166,7 +166,6 @@ f"""
                         if selection == "":
                             selection = self.selected_m_name+"_dataset"
                         Pickler.dump("/data/"+selection,self.active_dataset)
-                        return
                     case _:
                         print("Invalid selection")
             except ValueError:

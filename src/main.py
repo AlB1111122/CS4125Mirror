@@ -32,7 +32,7 @@ m.test_model(d["X_test"], d["y_test"],"test")"""
 #mf = ModelFacade()
 #mf.
 dsc = LoadProcessedDatasetCreator()
-d = dsc.create_dataset("processed_data.dump","test")
+d = dsc.create_dataset("saveTest.pkl","test")
 m = model_factory.LoadModelFactory.create_model("test.pkl")
 print(d)
 print(m.classifier.predict(d["X_test"]))
