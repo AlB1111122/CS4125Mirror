@@ -12,6 +12,8 @@ our emails.
 
 ### Factory Pattern
 
+We're using a Factory pattern to provide machine learning models to the user that the app uses.
+
 ![Factory Pattern](./images/Factory_Diagram.png)
 
 ### Decorator Pattern
@@ -20,9 +22,15 @@ our emails.
 
 ### Singleton
 
+Our Singleton Util class provides a method to allow all other classes within our app to access the project directory, as
+outlined in the UML diagram.
+
 ![Singleton](./images/Singleton.png)
 
 ### Facade
+
+We use a Facade pattern for our client interface, which provides methods that are in the subsystem classes in one class that
+the users can access.
 
 ![Facade](./images/Facade_Diagram.png)
 
