@@ -2,81 +2,28 @@ import os
 
 from src.model.model_facade import ModelFacade
 from src.util import Util
-"""
-class CLI:
-    def __init__(self, model_facade):
-        self.model_facade = model_facade
-        self.create_train_test = None
+from src.preprocess.dataset_creator import LoadProcessedDatasetCreator, ScratchDatasetCreator
+import shutil
 
-    def main(self):
-        while True:#add fault tolerance
-            print("Press 1 to create a model")
-            print("Press 2 to print model registries")
-            print("Press 3 to register model registries")
-            print("Press 4 to load a model")
-            print("Press 5 to save a model")
-            print("Press 6 to train a model")#not working
-            print("Press 7 to test a model")
-            print("Press 8 to predict a model")
-            print("Press 9 to create a train test split")
-
-            choice = input("Enter your choice: ")
-            if choice == '1':
-                model_type = input("Enter the model type (e.g., 'decision_tree'): ")
-                model = self.model_facade.create_model(model_type)
-                print("Model created")
-            elif choice == '2':
-                registries = self.model_facade.list_model_registry()
-
-                for registry in registries:
-                    print(registry)
-            elif choice == '3': #fix: does not add a new type of model
-                model_name = input("Enter the model name (e.g., 'decision_tree'): ")
-                model_class = input("Enter the model class (e.g., 'DecisionTreeClassifier'): ")
-                registry = self.model_facade.register_model(model_name, model_class)
-                registries = self.model_facade.list_model_registry()
-
-                for registry in registries:
-                    print(registry)
-            elif choice == '4':#FIX: list the avalible models
-                model_name = input("Enter the model name (e.g., 'decision_tree'): ")
-                model = self.model_facade.load_model(model_name)
-                print("Model loaded")
-            elif choice == '5':
-                model_name = input("Enter the model name (e.g., 'decision_tree'): ")
-                model = self.model_facade.save_model(model_name)
-                print("Model Saved")
-            elif choice == '6':
-                d = self.create_train_test
-                model = self.model_facade.train_model(d["X_train"], d["y_train"])
-                print("Model trained")
-            elif choice == '7':
-                d = self.create_train_test
-                file_name = input("Enter the file name: ")
-                model = self.model_facade.test_model(d["X_test"], d["y_test"], file_name)
-
-                file_path = f"src/saves/test_results/{file_name}"
-                try:
-                    with open(file_path, 'r') as file:
-                        print(file.read())
-                except FileNotFoundError:
-                    print(f"File {file_path} not found.")
-            elif choice == '8':
-                d = self.create_train_test
-                model = self.model_facade.predict_model(d["X_test"], d["y_test"])
-                print("Model predicted")
-            elif choice == '9':
-                creator_type = input("Enter the creator type (e.g., 'scratch'): ")
-                file_name = input("Enter the file name: ")
-                self.create_train_test = self.model_facade.create_train_test(creator_type, file_name)
-                print("Train test split created")
-            elif choice == 'q':
-                break"""
 class CLI:
     def __init__(self):
         self.model_facade = ModelFacade()
         self.selected_m_name = "None"
         self.util = Util()
+        self.dataset_creator = None
+        self.active_dataset = None
+
+    def select_from_dir(self, src_dir):
+        directory = self.util.get_project_dir() + src_dir
+        print(directory)
+        # List only files in the directory
+        i = 0
+        files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
+        for file in files:
+            print(str(i) + ") " + file)
+            i += 1
+        response = input("Selection: ")
+        return files[int(response)]
 
     def cli(self):
         while True:
@@ -89,7 +36,7 @@ class CLI:
                 3)Save current model 
                 4)Get dataset 
                 5)Use model
-                q) to quit"
+                q) to quit
                 """)
                 selection = input("Selection: ")
                 match selection:
@@ -108,17 +55,9 @@ class CLI:
                         self.model_facade.create_model(self.selected_m_name)
                         continue
                     case "2":
-                        directory = self.util.get_project_dir() +  "/saves/models"
-                        print(directory)
-                        # List only files in the directory
-                        i = 0
-                        files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
-                        for file in files:
-                            print(str(i) + ") "+file)
-                            i += 1
-                        model_sel = input("Model selection: ")
-                        self.model_facade.load_model(files[int(model_sel)])
-                        self.selected_m_name = files[int(model_sel)] + "_" +str(type(self.model_facade.model.classifier))
+                        model_sel = self.select_from_dir("/saves/models")
+                        self.model_facade.load_model(model_sel)
+                        self.selected_m_name = model_sel + "_" +str(type(self.model_facade.model.classifier))
                         continue
                     case "3":
                         if self.selected_m_name == "None":
@@ -132,31 +71,99 @@ class CLI:
                         continue
                     case "4":
                         print(
-                            """
-                            Enter the dataset source: 
-                            1) Preprocessed dump of data 
-                            2) Raw CSV
-                            """
+                            "Enter the dataset source: 1) Preprocessed dump of data 2) Raw CSV"
                         )
-                        dataset_source = ""
-                        match input("Selection: "):
-                            case "1":
-                                pass
-                            case "2":
-                                pass
-                            case _:
-                                print("Invalid selection, try again")
-                                continue
+                        #dataset_source = ""
+                        loop = True
+                        while loop:
+                            match input("Selection: "):
+                                case "1":
+                                    self.dataset_creator = LoadProcessedDatasetCreator()
+                                    dataset_source = "/saves/data"
+                                    continue
+                                case "2":
+                                    self.dataset_creator = ScratchDatasetCreator()
+                                    dataset_source = "/data"
+                                    continue
+                                case _:
+                                    print("Invalid selection, try again")
+                                    loop = False
+                                    break
+                            print("Pick the file you want to load from: 1)Enter full path to new file 2)Pick from known data")
+                            match input("Selection: "):
+                                case "1":
+                                    data_sel = input("Enter absolute path to file: ")
+                                    try:
+                                        shutil.copy(data_sel, self.util.get_project_dir()+dataset_source)
+                                        continue
+                                    except shutil.SameFileError:
+                                        print("File already exists")
+                                        loop = False
+                                case "2":
+                                    print(dataset_source)
+                                    data_sel = self.select_from_dir(dataset_source)
+                                    continue
+                                case _:
+                                    print("Invalid selection, try again")
+                                    loop = False
 
-
-                        dataset_source = input("Enter the dataset source: 1)preprocessed dump of data 2)raw csv")
-                        datset_type = input("Select dataset type: 1)train 2)test 3)predict")
-                        # match
+                            print("Pick the use you want the dataset for: 1)Single usage (train or test or predict) 2)Train and test")
+                            match input("Selection: "):
+                                case "1":
+                                    self.active_dataset = self.dataset_creator.create_dataset(data_sel, "data")
+                                    continue
+                                case "2":
+                                    train_split = int(input("Train split size between 0-1 (will be .2 if left blank): "))
+                                    if train_split <= 0 or train_split >= 1:
+                                        train_split = .2
+                                    self.active_dataset = self.dataset_creator.create_train_test(data_sel,train_split)
+                                    continue
+                                case _:
+                                    loop = False
                         continue
                     case "5":
+                        print(f"""
+                        1)Train
+                        2)Test
+                        3)Train and test
+                        4)Predict
+                        """)
+                        match(input("Selection: ")):
+                            case "1":
+                                if "y_data" in self.active_dataset:
+                                    self.model_facade.train_model(self.active_dataset["X_data"],self.active_dataset["y_data"])
+                                else:
+                                    print("Your selected dataset is not for training")
+                                continue
+                            case "2":
+                                if "y_data" in self.active_dataset:
+                                    test_outp_name = input("Name of test results file: ")
+                                    if test_outp_name == "":
+                                        test_outp_name=self.selected_m_name+"_test_results.txt"
+                                    self.model_facade.test_model(self.active_dataset["X_data"],self.active_dataset["y_data"],test_outp_name)
+                                else:
+                                    print("Your selected dataset is not for esting")
+                                continue
+                            case "3":
+                                if "y_test" in self.active_dataset:
+                                    self.model_facade.train_model(self.active_dataset["X_train"],self.active_dataset["y_train"])
+                                    test_outp_name = input("Name of test results file: ")
+                                    if test_outp_name == "":
+                                        test_outp_name = self.selected_m_name + "_test_results.txt"
+                                    self.model_facade.test_model(self.active_dataset["X_test"], self.active_dataset["y_test"],
+                                                         test_outp_name)
+                                else:
+                                    print("Your selected dataset is not for training and testing")
+                                continue
+                            case "4":
+                                if "X_data" in self.active_dataset:
+                                    self.model_facade.predict_model(self.active_dataset["X_data"])
+                                else:
+                                    print("Your selected dataset is not for predicting")
+                                continue
                         continue
-                    case "6":
-                        continue
+                    #case "6": come back to this
+                    #    continue
                     case _:
                         print("Invalid selection")
                         continue
