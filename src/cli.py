@@ -1,5 +1,7 @@
 import os
 
+from numpy.f2py.auxfuncs import throw_error
+
 from src.model.model_facade import ModelFacade
 from src.util import Util
 from src.preprocess.dataset_creator import LoadProcessedDatasetCreator, ScratchDatasetCreator
@@ -28,16 +30,18 @@ class CLI:
     def cli(self):
         while True:
             try:
-                print(f"""
-                Model selected: {self.selected_m_name}
-                
-                1)Create new model 
-                2)Load model from storage 
-                3)Save current model 
-                4)Get dataset 
-                5)Use model
-                q) to quit
-                """)
+                print(
+f"""
+Model selected: {self.selected_m_name}
+
+1)Create new model 
+2)Load model from storage 
+3)Save current model 
+4)Get dataset 
+5)Use model
+q)To quit
+"""
+                )
                 selection = input("Selection: ")
                 match selection:
                     case "q":
@@ -53,12 +57,10 @@ class CLI:
                         model_sel = input("Model selection: ")
                         self.selected_m_name = list(self.model_facade.list_model_registry())[int(model_sel)]
                         self.model_facade.create_model(self.selected_m_name)
-                        continue
                     case "2":
                         model_sel = self.select_from_dir("/saves/models")
                         self.model_facade.load_model(model_sel)
                         self.selected_m_name = model_sel + "_" +str(type(self.model_facade.model.classifier))
-                        continue
                     case "3":
                         if self.selected_m_name == "None":
                             print("Please select a model to be able to save it")
@@ -68,41 +70,37 @@ class CLI:
                             if selection == "":
                                 selection = self.selected_m_name
                             self.model_facade.save_model(selection)
-                        continue
                     case "4":
                         print(
                             "Enter the dataset source: 1) Preprocessed dump of data 2) Raw CSV"
                         )
-                        #dataset_source = ""
+                        dataset_source = ""
                         loop = True
                         while loop:
                             match input("Selection: "):
                                 case "1":
                                     self.dataset_creator = LoadProcessedDatasetCreator()
                                     dataset_source = "/saves/data"
-                                    continue
                                 case "2":
                                     self.dataset_creator = ScratchDatasetCreator()
                                     dataset_source = "/data"
-                                    continue
                                 case _:
                                     print("Invalid selection, try again")
                                     loop = False
-                                    break
+                            if dataset_source == "":
+                                throw_error(IndexError)
                             print("Pick the file you want to load from: 1)Enter full path to new file 2)Pick from known data")
                             match input("Selection: "):
                                 case "1":
                                     data_sel = input("Enter absolute path to file: ")
                                     try:
                                         shutil.copy(data_sel, self.util.get_project_dir()+dataset_source)
-                                        continue
                                     except shutil.SameFileError:
                                         print("File already exists")
                                         loop = False
                                 case "2":
                                     print(dataset_source)
                                     data_sel = self.select_from_dir(dataset_source)
-                                    continue
                                 case _:
                                     print("Invalid selection, try again")
                                     loop = False
@@ -111,16 +109,14 @@ class CLI:
                             match input("Selection: "):
                                 case "1":
                                     self.active_dataset = self.dataset_creator.create_dataset(data_sel, "data")
-                                    continue
                                 case "2":
                                     train_split = int(input("Train split size between 0-1 (will be .2 if left blank): "))
                                     if train_split <= 0 or train_split >= 1:
                                         train_split = .2
                                     self.active_dataset = self.dataset_creator.create_train_test(data_sel,train_split)
-                                    continue
                                 case _:
-                                    loop = False
-                        continue
+                                    print("Invalid selection, try again")
+                            loop = False
                     case "5":
                         print(f"""
                         1)Train
@@ -134,7 +130,6 @@ class CLI:
                                     self.model_facade.train_model(self.active_dataset["X_data"],self.active_dataset["y_data"])
                                 else:
                                     print("Your selected dataset is not for training")
-                                continue
                             case "2":
                                 if "y_data" in self.active_dataset:
                                     test_outp_name = input("Name of test results file: ")
@@ -142,8 +137,7 @@ class CLI:
                                         test_outp_name=self.selected_m_name+"_test_results.txt"
                                     self.model_facade.test_model(self.active_dataset["X_data"],self.active_dataset["y_data"],test_outp_name)
                                 else:
-                                    print("Your selected dataset is not for esting")
-                                continue
+                                    print("Your selected dataset is not for testing")
                             case "3":
                                 if "y_test" in self.active_dataset:
                                     self.model_facade.train_model(self.active_dataset["X_train"],self.active_dataset["y_train"])
@@ -154,19 +148,15 @@ class CLI:
                                                          test_outp_name)
                                 else:
                                     print("Your selected dataset is not for training and testing")
-                                continue
                             case "4":
                                 if "X_data" in self.active_dataset:
                                     self.model_facade.predict_model(self.active_dataset["X_data"])
                                 else:
                                     print("Your selected dataset is not for predicting")
-                                continue
-                        continue
                     #case "6": come back to this
                     #    continue
                     case _:
                         print("Invalid selection")
-                        continue
             except ValueError:
                 print("Invalid input. Please try again")
             except IndexError:
