@@ -131,6 +131,24 @@ class CLI:
                             self.model_facade.save_model(selection)
                         continue
                     case "4":
+                        print(
+                            """
+                            Enter the dataset source: 
+                            1) Preprocessed dump of data 
+                            2) Raw CSV
+                            """
+                        )
+                        dataset_source = ""
+                        match input("Selection: "):
+                            case "1":
+                                pass
+                            case "2":
+                                pass
+                            case _:
+                                print("Invalid selection, try again")
+                                continue
+
+
                         dataset_source = input("Enter the dataset source: 1)preprocessed dump of data 2)raw csv")
                         datset_type = input("Select dataset type: 1)train 2)test 3)predict")
                         # match
