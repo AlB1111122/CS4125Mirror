@@ -44,3 +44,9 @@ usable form for our clients.
 
 ![Strategy](./images/Strategy_Diagram.png)
 
+### Sequence Diagram
+
+The below diagram outlines the flow of events as a user interacts with our app.
+
+![Sequence of events](./images/Sequence_Diagram.png)
+
