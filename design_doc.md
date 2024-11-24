@@ -18,6 +18,9 @@ We're using a Factory pattern to provide machine learning models to the user tha
 
 ### Decorator Pattern
 
+This is a slightly tweaked version of a Decorator pattern as Python has a few issues with properly implementing a decorator
+class, we have instead a function that acts as a decorator, which in our case is ``autoprocessed(func)``.
+
 ![Decorator Pattern](./images/Decorator_Diagram.png)
 
 ### Singleton
@@ -33,4 +36,6 @@ We use a Facade pattern for our client interface, which provides methods that ar
 the users can access.
 
 ![Facade](./images/Facade_Diagram.png)
+
+### Strategy
 
