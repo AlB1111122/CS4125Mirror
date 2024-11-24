@@ -79,11 +79,18 @@ class CLI:
         self.util = Util()
 
     def cli(self):
-        while(True):
+        while True:
             try:
-                print("1)Create new model 2)Load model from storage 3)Save current model 4)Get dataset 5)Use model")
-                print("q) to quit")
-                print("Model selected: " + self.selected_m_name)
+                print(f"""
+                Model selected: {self.selected_m_name}
+                
+                1)Create new model 
+                2)Load model from storage 
+                3)Save current model 
+                4)Get dataset 
+                5)Use model
+                q) to quit"
+                """)
                 selection = input("Selection: ")
                 match selection:
                     case "q":
@@ -119,14 +126,14 @@ class CLI:
                         else:
                             print("Enter a name to send the model under, or leave blank to use default name")
                             selection = input("Saved model name: ")
-                            if(selection == ""):
+                            if selection == "":
                                 selection = self.selected_m_name
                             self.model_facade.save_model(selection)
                         continue
                     case "4":
                         dataset_source = input("Enter the dataset source: 1)preprocessed dump of data 2)raw csv")
                         datset_type = input("Select dataset type: 1)train 2)test 3)predict")
-                        match
+                        # match
                         continue
                     case "5":
                         continue
