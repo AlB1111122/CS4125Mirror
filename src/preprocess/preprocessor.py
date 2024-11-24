@@ -17,6 +17,7 @@ class IPreprocessor(ABC):
 
     def clean_data(self,data_frame):
         pass
+
     def process(self, file_name):
         pass
 
@@ -26,6 +27,7 @@ class Preprocessor(IPreprocessor):
         self.file_path = None
 
     def process(self, file_name):
+        """Load and process the data"""
         data = self.data_loader.load_data(file_name)
         data = self.data_cleaner.clean_data(data)
         data["ts_"+self.translator.lang] = self.translator.translate(data["ts"].to_list())

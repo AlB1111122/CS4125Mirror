@@ -5,7 +5,10 @@ class IDataCleaner(ABC):
         pass
 
 class CSVDataCleaner(IDataCleaner):
+    """Class to handle the various forms of cleaning the data"""
+
     def clean_data(self, data):
+        """Clean the data of noise using regex to make it more uniform"""
         noise = r"(sv\s*:)|(wg\s*:)|(ynt\s*:)|(fw(d)?\s*:)|(r\s*:)|(re\s*:)|(\[|\])|(aspiegel support issue submit)|(null)|(nan)|((bonus place my )?support.pt 自动回复:)"
         data["ts"] = (
             data["Ticket Summary"].str
