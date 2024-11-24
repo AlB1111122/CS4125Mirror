@@ -22,6 +22,7 @@
           scikit-learn
           stanza
           transformers
+          sentencepiece
         ]);
       in {
         devShells.default = pkgs.mkShell {
