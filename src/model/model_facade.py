@@ -6,7 +6,7 @@ from src.model.model import Model
 class ModelFacade():
     def __init__(self):
         self.model_registry = ModelRegistry()
-        self.model = Model()
+        self.model = None
 
     def create_model(self, model_type: str):
         self.model = model_factory.NewModelFactory.create_model(model_type)
