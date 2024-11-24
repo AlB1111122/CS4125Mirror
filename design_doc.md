@@ -24,3 +24,5 @@ our emails.
 
 ### Facade
 
+![Facade](./images/Facade_Diagram.png)
+
