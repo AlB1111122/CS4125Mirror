@@ -31,8 +31,8 @@ class ModelFacade():
     def test_model(self, X_test, y_test, file_name: str):
         return self.model.test_model(X_test, y_test, file_name)
     
-    def predict_model(self, X_test):
-        return self.model.predict(X_test)
+    def predict_model(self, X_test,y_test):
+        return self.model.predict(X_test,y_test)
     
     def create_train_test(self, creator_type: str, file_name: str):
         if creator_type == "scratch":

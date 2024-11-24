@@ -6,6 +6,7 @@ from src.model.model_facade import ModelFacade
 from src.util import Util
 from src.preprocess.dataset_creator import LoadProcessedDatasetCreator, ScratchDatasetCreator
 import shutil
+from pathlib import Path
 
 class CLI:
     def __init__(self):
@@ -93,8 +94,12 @@ q)To quit
                             match input("Selection: "):
                                 case "1":
                                     data_sel = input("Enter absolute path to file: ")
+                                    print(data_sel)
+                                    print(os.path.basename(data_sel))
+                                    filen = os.path.basename(data_sel)
                                     try:
                                         shutil.copy(data_sel, self.util.get_project_dir()+dataset_source)
+                                        data_sel = filen
                                     except shutil.SameFileError:
                                         print("File already exists")
                                         loop = False
@@ -110,7 +115,7 @@ q)To quit
                                 case "1":
                                     self.active_dataset = self.dataset_creator.create_dataset(data_sel, "data")
                                 case "2":
-                                    train_split = int(input("Train split size between 0-1 (will be .2 if left blank): "))
+                                    train_split = float(input("Train split size between 0-1 (will be .2 if left blank): "))
                                     if train_split <= 0 or train_split >= 1:
                                         train_split = .2
                                     self.active_dataset = self.dataset_creator.create_train_test(data_sel,train_split)
@@ -150,7 +155,7 @@ q)To quit
                                     print("Your selected dataset is not for training and testing")
                             case "4":
                                 if "X_data" in self.active_dataset:
-                                    self.model_facade.predict_model(self.active_dataset["X_data"])
+                                    print(self.model_facade.predict_model(self.active_dataset["X_data"],self.active_dataset["y_data"]))
                                 else:
                                     print("Your selected dataset is not for predicting")
                     #case "6": come back to this
