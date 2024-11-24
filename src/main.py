@@ -1,5 +1,11 @@
 from src.model import model_factory
 from src.preprocess.dataset_creator import *
+"""from src.model import model_facade
+from ""
+
+mf = model_facade.ModelFacade("""
+
+
 """
 m = model_factory.NewModelFactory.create_model("decision_tree")
 p = pickler.Pickler()
@@ -15,10 +21,10 @@ dsc = LoadProcessedDatasetCreator()
 m = model_factory.NewModelFactory.create_model("decision_tree")
 d = dsc.create_train_test("processed_data.dump")
 m.train(d["X_train"], d["y_train"])
-m.test_model(d["X_test"], d["y_test"],"test")"""
+m.test_model(d["X_test"], d["y_test"],"test")
 
 m = model_factory.NewModelFactory.create_model("decision_tree")
 sdc = ScratchDatasetCreator()
 d = sdc.create_train_test("shortAppGallery.csv")
 m.train(d["X_train"], d["y_train"])
-m.test_model(d["X_test"], d["y_test"],"test")
+m.test_model(d["X_test"], d["y_test"],"test")"""
