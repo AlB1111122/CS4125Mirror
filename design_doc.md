@@ -39,3 +39,8 @@ the users can access.
 
 ### Strategy
 
+Our Strategy pattern is in the form of a CLI, where we have encapsulated the behaviour of our datasets and Facade into a
+usable form for our clients.
+
+![Strategy](./images/Strategy_Diagram.png)
+
