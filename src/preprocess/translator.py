@@ -16,6 +16,7 @@ class ITranslator(ABC):
         pass
 
 class StanzaTranslator(ITranslator):
+    """Translate from a variety of languages"""
     def __init__(self,lang):
         super().__init__(lang)
         self.t2t_m = "facebook/m2m100_418M"
@@ -36,6 +37,7 @@ class StanzaTranslator(ITranslator):
             return self.mappings[lang]
 
     def translate(self, texts):
+        """Translate from various languages into English"""
         text_transd_l = []
         for text in texts:
             if text == "":
@@ -47,7 +49,8 @@ class StanzaTranslator(ITranslator):
             if doc.lang == self.lang:
                 text_transd_l = text_transd_l + [text]
             else:
-                self.map_language(doc.lang)
+                if doc.lang in self.mappings.keys():
+                    doc.lang = self.map_language(doc.lang)
                 case = 2
 
                 if case == 1:
