@@ -29,7 +29,8 @@ class ScratchDatasetCreator(IDatasetCreator):
 
     def autoprocessed(func):
         def wrapper(instance, *args, **kwargs):
-            file_name = args[0]
+            #file_name = args[0]
+            file_name = kwargs.get("file_name")
             print(f"Processing file: {file_name}")
 
             p = instance.preprocessor
@@ -59,24 +60,26 @@ class LoadProcessedDatasetCreator(IDatasetCreator):
         self.lang = lang
 
     def autoprocessed(func):
+        """Decorator to load a pre-processed model"""
         def wrapper(instance, *args, **kwargs):
-            file_name = args[0]
+            file_name = kwargs.get("file_name")
             print(f"Processing file: {file_name}")
             data = Pickler.read_dump("data/"+file_name)
 
-            if data.empty:
+            if not data:
                 print("The DataFrame is empty.")
                 return
-            X_good, y_good = instance.data_extractor.extract_data(data=data,lang=instance.lang,min_val=10)
-            # Call the original function with updated arguments
-            return func(instance,x=X_good,y=y_good, *args, **kwargs)
+            #return func(instance,x=data["X_data"],y=data["y_data"], *args, **kwargs)
+            return data
 
         return wrapper
 
     @autoprocessed  # x,y passed int by decorator
     def create_train_test(self,file_name,x,y,test_size=.2):
+        """Test the pre-trained model"""
         return super().create_train_test(file_name,x,y,test_size)
 
     @autoprocessed  # x,y passed int by decorator
     def create_dataset(self,file_name,use,x,y,):
+        """Use the pre-trained model to create a new dataset"""
         return super().create_dataset(file_name,use,x,y)

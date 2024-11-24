@@ -1,6 +1,7 @@
 import os
 
 class Util:
+  """A utility class containing useful functions"""
   # using __ is convention for "private" vars
   # class variable __instance will keep track of the lone object instance
   __instance = None
@@ -13,4 +14,5 @@ class Util:
     return cls.__instance
 
   def get_project_dir(self):
+    """Get the path to the project dir"""
     return self.__PROJ_DIR

@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 class IDataExtractor(ABC):
-
+    """Abstract class to manage extracting good data from the raw input data"""
     @staticmethod
     @abstractmethod
     def extract_data(data, lang,min_val):

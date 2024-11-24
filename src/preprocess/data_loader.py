@@ -8,12 +8,12 @@ class IDataLoader(ABC):
         pass
 
 class CSVDataLoader(IDataLoader):
-    def __init__(self):
-        self.file_path = None
+    """Load data from a CSV file"""
 
     def load_data(self,input_file_name):
-        self.file_path = Util().get_project_dir()+"/data/"+input_file_name
-        df = pd.read_csv(self.file_path)
+        """Load data from a specified CSV file"""
+        file_path = Util().get_project_dir()+"/data/"+input_file_name
+        df = pd.read_csv(file_path)
 
         # convert the dtype object to unicode string
         df['Interaction content'] = df['Interaction content'].values.astype('U')
