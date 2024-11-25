@@ -16,6 +16,8 @@ q)To quit
 3. Save current model: save the model you are currently working with so its training can be leveraged for future use.
 4. Get dataset: allows a user to create a new dataset for training from a csv file, or load a previously processed and saved dataset. They can select a csv file that has already been entered into the system or give it a new one by passing in an absolute path to the file. The user can make a dataset stable for 1 usage at a time (training, testing, or predicting, called single usage, it can be used multipule times, its just not suitable for the ```3)Train and test``` in the model usage ) or training and testing together.
 5. Use model: the user is prompted ```1)Train 2)Test 3)Train and test 4)Predict``` which uses the selected model, and dataset to perform the selected action.
+    + when predicting, the model will print the labels it predicts for each data element it is given from the datset
+    + when training a results .txt file will be created in the test_results directory,
 6. Save current dataset: as it takes a long time to translate the data so a user may want to save a dataset to load it later, they will be asked to name the file
 
 
