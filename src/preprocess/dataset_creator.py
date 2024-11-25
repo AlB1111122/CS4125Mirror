@@ -29,7 +29,6 @@ class ScratchDatasetCreator(IDatasetCreator):
 
     def autoprocessed(func):
         def wrapper(instance, *args, **kwargs):
-            #file_name = args[0]
             file_name = kwargs.get("file_name")
             print(f"Processing file: {file_name}")
 
@@ -69,7 +68,6 @@ class LoadProcessedDatasetCreator(IDatasetCreator):
             if data.empty:
                 print("The DataFrame is empty.")
                 return
-            #return func(instance,x=data["X_data"],y=data["y_data"], *args, **kwargs)
             return data
 
         return wrapper
