@@ -34,6 +34,9 @@ test.*
 
 #saved models and data and test results
 #leave data one in for now so that it works for others
-src/saves/models
-src/saves/test_results
+src/saves/models/*
+src/saves/test_results/*
+src/saves/data/*
+src/saves/vocab/*
+!/**/.gitkeep
 

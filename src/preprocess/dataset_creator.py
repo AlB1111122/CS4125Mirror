@@ -66,7 +66,7 @@ class LoadProcessedDatasetCreator(IDatasetCreator):
             print(f"Processing file: {file_name}")
             data = Pickler.read_dump("data/"+file_name)
 
-            if not data:
+            if data.empty:
                 print("The DataFrame is empty.")
                 return
             #return func(instance,x=data["X_data"],y=data["y_data"], *args, **kwargs)

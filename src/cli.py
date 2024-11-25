@@ -21,7 +21,8 @@ class CLI:
         print(directory)
         # List only files in the directory
         i = 0
-        files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
+
+        files = [entry.name for entry in os.scandir(directory) if not entry.name.startswith('.')]
         for file in files:
             print(str(i) + ") " + file)
             i += 1
